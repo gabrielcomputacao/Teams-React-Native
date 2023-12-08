@@ -23,4 +23,4 @@ export const Icon = styled(MaterialIcons).attrs<ButtonIconProps>(
     size: 24,
     color: type === "PRIMARY" ? theme.COLORS.GREEN_700 : theme.COLORS.RED,
   })
-);
+)``;
