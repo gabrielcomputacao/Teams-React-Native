@@ -8,7 +8,9 @@ import { useNavigation } from "@react-navigation/native";
 export function NewGroup() {
   const navigation = useNavigation();
 
-  function handleNewGroup() {}
+  function handleNew() {
+    navigation.navigate("players", { group: "Rocket" });
+  }
 
   return (
     <Container>
@@ -21,11 +23,7 @@ export function NewGroup() {
 
         <Input placeholder="Nome da turma" />
 
-        <Button
-          title="Criar"
-          style={{ marginTop: 20 }}
-          onPress={handleNewGroup}
-        />
+        <Button title="Criar" style={{ marginTop: 20 }} onPress={handleNew} />
       </Content>
     </Container>
   );

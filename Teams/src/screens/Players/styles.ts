@@ -14,17 +14,18 @@ export const Form = styled.View`
 
   flex-direction: row;
   justify-content: center;
+  align-items: center;
   border-radius: 6px;
 `;
 
-export const HeaderList = styled.Text`
+export const HeaderList = styled.View`
   align-items: center;
   flex-direction: row;
   width: 100%;
   margin: 32px 0 12px;
 `;
 
-export const NumberOfPlayers = styled.View`
+export const NumberOfPlayers = styled.Text`
   ${({ theme }) => css`
     color: ${theme.COLORS.GRAY_200};
     font-family: ${theme.FONT_FAMILY.BOLD};
