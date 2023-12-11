@@ -27,6 +27,10 @@ export default function Groups() {
     }
   }
 
+  function handleOpenGroup(group: string) {
+    navigation.navigate("players", { group });
+  }
+
   /* useFocusEffect observa quando o focus voltou para a tela e faz uma nova renderização , é aconselhavel usar junto com o useCallback */
   useFocusEffect(
     useCallback(() => {
@@ -42,7 +46,9 @@ export default function Groups() {
       <FlatList
         data={groups}
         keyExtractor={(item) => item}
-        renderItem={({ item }) => <GroupCard title={item} />}
+        renderItem={({ item }) => (
+          <GroupCard title={item} onPress={() => handleOpenGroup(item)} />
+        )}
         ListEmptyComponent={() => (
           <ListEmpty message="Que tal cadastrar a primeira turma?" />
         )}
