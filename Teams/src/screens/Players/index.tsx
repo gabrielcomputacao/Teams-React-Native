@@ -4,12 +4,14 @@ import { Highlight } from "@components/Highlight";
 import { ButtonIcon } from "@components/ButtonIcon";
 import { Input } from "@components/Input";
 import { Filter } from "@components/FIlter";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { useState } from "react";
 import { PlayerCard } from "@components/PlayerCard";
 import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Button";
 import { useRoute } from "@react-navigation/native";
+import { AppError } from "@utils/AppError";
+import { playerAddByGroup } from "@storage/player/playerAddByGroup";
 
 type RoutePArams = {
   group: string;
@@ -18,9 +20,32 @@ type RoutePArams = {
 export function Players() {
   const [team, setTeam] = useState("TimeA");
   const [players, setPlayers] = useState([]);
+  const [newPlayersName, setNewPlayersName] = useState("");
 
   const route = useRoute();
   const { group } = route.params as RoutePArams;
+
+  async function handleAddPlayer() {
+    if (newPlayersName.trim().length === 0) {
+      return Alert.alert("Nova Pessoa", "informe o nome da pessoa!");
+    }
+
+    const newPlayer = {
+      nome: newPlayersName,
+      time: team,
+    };
+
+    try {
+      await playerAddByGroup(newPlayer, group);
+    } catch (error) {
+      if (error instanceof AppError) {
+        Alert.alert("Nova Pessoa", error.message);
+      } else {
+        console.log(error);
+        Alert.alert("Nova Pessoa", "Não foi possível adicionar.");
+      }
+    }
+  }
 
   return (
     <Container>
@@ -29,9 +54,13 @@ export function Players() {
       <Highlight title={group} subtitle="adicione a galera!!" />
 
       <Form>
-        <Input placeholder="Nome da Pessoa" autoCorrect={false} />
+        <Input
+          placeholder="Nome da Pessoa"
+          autoCorrect={false}
+          onChangeText={setNewPlayersName}
+        />
 
-        <ButtonIcon icon="add" type="PRIMARY" />
+        <ButtonIcon onPress={handleAddPlayer} icon="add" type="PRIMARY" />
       </Form>
 
       <HeaderList>
