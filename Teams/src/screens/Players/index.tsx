@@ -16,12 +16,14 @@ import { playersGetByGroupAndTeam } from "@storage/player/playerGetByGroupAndTea
 import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
 import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
 import { groupRemoveByName } from "@storage/group/groupRemoveByName";
+import { Loading } from "@components/Loading";
 
 type RoutePArams = {
   group: string;
 };
 
 export function Players() {
+  const [isLoading, setIsLoading] = useState(true);
   const [team, setTeam] = useState("TimeA");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayersName, setNewPlayersName] = useState("");
@@ -60,11 +62,14 @@ export function Players() {
 
   async function fetchPlayersByTeam() {
     try {
+      setIsLoading(true);
       const playersByTeam = await playersGetByGroupAndTeam(group, team);
 
       setPlayers(playersByTeam);
     } catch (error) {
       Alert.alert("Pessoas", "Não foi possível carregar as pessoas filtradas.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -134,27 +139,32 @@ export function Players() {
 
         <NumberOfPlayers>{players.length}</NumberOfPlayers>
       </HeaderList>
-      <FlatList
-        data={players}
-        keyExtractor={(item) => item.nome}
-        renderItem={({ item }) => (
-          <PlayerCard
-            name={item.nome}
-            onRemove={() => {
-              handlePlayerRemove(item.nome);
-            }}
-          />
-        )}
-        ListEmptyComponent={() => (
-          <ListEmpty message="Não tem resultados ainda para players" />
-        )}
-        showsVerticalScrollIndicator={false}
-        /* com o array e possivel passar varios estilos que sao aplicados dependendo da condicional  */
-        contentContainerStyle={[
-          { paddingBottom: 100 },
-          players.length === 0 && { flex: 1 },
-        ]}
-      />
+
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={players}
+          keyExtractor={(item) => item.nome}
+          renderItem={({ item }) => (
+            <PlayerCard
+              name={item.nome}
+              onRemove={() => {
+                handlePlayerRemove(item.nome);
+              }}
+            />
+          )}
+          ListEmptyComponent={() => (
+            <ListEmpty message="Não tem resultados ainda para players" />
+          )}
+          showsVerticalScrollIndicator={false}
+          /* com o array e possivel passar varios estilos que sao aplicados dependendo da condicional  */
+          contentContainerStyle={[
+            { paddingBottom: 100 },
+            players.length === 0 && { flex: 1 },
+          ]}
+        />
+      )}
       <Button
         title="Remover Turma"
         type="SECONDARY"
